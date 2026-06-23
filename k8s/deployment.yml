@@ -19,13 +19,13 @@ spec:
         ports:
         - containerPort: 8081
         env:
-        # Engañamos al conector pasándole una URL de base de datos H2 local en memoria
+        # Forzamos la cadena JDBC para que use un archivo local directo en el disco
         - name: DB_ENDPOINT
           value: "localhost"
         - name: DB_PORT
           value: "8081"
         - name: DB_NAME
-          value: "mem:despachos_db;DB_CLOSE_DELAY=-1;MODE=MySQL"
+          value: "file:/tmp/despachos.db"
         - name: DB_USERNAME
           value: "sa"
         - name: DB_PASSWORD
@@ -33,7 +33,7 @@ spec:
         - name: SPRING_JPA_HIBERNATE_DDL_AUTO
           value: "create-drop"
         - name: RESTART_VERSION
-          value: "5" # Forzamos el cambio radical
+          value: "6" # Forzamos el cambio de versión
 ---
 apiVersion: v1
 kind: Service
