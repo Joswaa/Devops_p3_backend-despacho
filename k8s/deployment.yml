@@ -20,7 +20,7 @@ spec:
         - containerPort: 3306
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: "admin123"
+          value: "rootpassword123"
         - name: MYSQL_DATABASE
           value: "despachos_db"
 ---
@@ -52,6 +52,10 @@ spec:
       labels:
         app: backend-despachos
     spec:
+      initContainers: # <-- CONGELA EL BACKEND HASTA QUE MYSQL REACCIONE
+      - name: wait-for-mysql
+        image: busybox:1.36
+        command: ['sh', '-c', 'until nc -z -w 2 mysql-despachos-service 3306; do echo waiting for mysql; sleep 2; done;']
       containers:
       - name: backend-despachos
         image: 921558516087.dkr.ecr.us-east-1.amazonaws.com/backend-despachos:latest
@@ -59,28 +63,14 @@ spec:
         - containerPort: 8081
         env:
         - name: DB_ENDPOINT
-          value: "mysql-despachos-service" # <-- Conexión interna dentro de Kubernetes
+          value: "mysql-despachos-service"
         - name: DB_PORT
           value: "3306"
         - name: DB_NAME
           value: "despachos_db"
         - name: DB_USERNAME
-          value: "root" # <-- CAMBIAR A ROOT
+          value: "root"
         - name: DB_PASSWORD
           value: "rootpassword123"
         - name: RESTART_VERSION
-          value: "1"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend-despachos-service
-  namespace: default
-spec:
-  type: ClusterIP
-  selector:
-    app: backend-despachos
-  ports:
-    - protocol: TCP
-      port: 8081
-      targetPort: 8081
+          value: "3" # <-- Cambiamos a 3 para forzar la actualización
