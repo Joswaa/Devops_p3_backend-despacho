@@ -86,3 +86,18 @@ spec:
           value: "update"
         - name: RESTART_VERSION
           value: "12"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-despachos-service
+  namespace: default
+spec:
+  type: LoadBalancer
+  selector:
+    app: backend-despachos
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
