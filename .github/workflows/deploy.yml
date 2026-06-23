@@ -22,15 +22,16 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
+        id: login-ecr # <--- Agregamos este ID para poder usar su salida
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.ECR_REPO_BACKEND_DESPACHOS }}:latest .
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO_BACKEND_DESPACHOS }}:latest .
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.ECR_REPO_BACKEND_DESPACHOS }}:latest
+          docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO_BACKEND_DESPACHOS }}:latest
 
       - name: TODO - Update deployment
         run: |
