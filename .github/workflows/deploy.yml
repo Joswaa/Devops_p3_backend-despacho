@@ -36,3 +36,11 @@ jobs:
       - name: TODO - Update deployment
         run: |
           echo "TODO: agregar aquí el comando real de despliegue en EKS/EC2 para el backend de despachos"
+
+      - name: Update Kubeconfig and Deploy to EKS
+        run: |
+          # 1. Conectar GitHub Actions con tu clúster de EKS
+          aws eks update-kubeconfig --region us-east-1 --name eks-proyecto-innovatech
+          
+          # 2. Ordenarle a Kubernetes que levante o actualice la app
+          kubectl apply -f k8s/
