@@ -65,9 +65,9 @@ spec:
         - name: DB_NAME
           value: "despachos_db"
         - name: DB_USERNAME
-          value: "root"
+          value: "root" # <-- CAMBIAR A ROOT
         - name: DB_PASSWORD
-          value: "admin123"
+          value: "rootpassword123"
         - name: RESTART_VERSION
           value: "1"
 ---
