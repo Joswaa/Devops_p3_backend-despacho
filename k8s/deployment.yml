@@ -16,6 +16,8 @@ spec:
       containers:
       - name: mysql
         image: mysql:8.0
+        # Forzamos el método de autenticación clásico compatible con drivers de Java
+        args: ["--default-authentication-plugin=mysql_native_password"]
         ports:
         - containerPort: 3306
         env:
@@ -62,8 +64,20 @@ spec:
         ports:
         - containerPort: 8081
         env:
+        # 1. Variables de entorno personalizadas (Por si el código las busca explícitamente)
+        - name: DB_ENDPOINT
+          value: "mysql-despachos-service"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_NAME
+          value: "despachos_db"
+        - name: DB_USERNAME
+          value: "root"
+        - name: DB_PASSWORD
+          value: "admin123"
+        # 2. Variables de entorno estándar de Spring (Agregamos allowPublicKeyRetrieval para MySQL 8)
         - name: SPRING_DATASOURCE_URL
-          value: "jdbc:mysql://mysql-despachos-service:3306/despachos_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC"
+          value: "jdbc:mysql://mysql-despachos-service:3306/despachos_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
         - name: SPRING_DATASOURCE_USERNAME
           value: "root"
         - name: SPRING_DATASOURCE_PASSWORD
@@ -71,4 +85,4 @@ spec:
         - name: SPRING_JPA_HIBERNATE_DDL_AUTO
           value: "update"
         - name: RESTART_VERSION
-          value: "11"
+          value: "12"
