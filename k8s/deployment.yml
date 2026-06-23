@@ -52,7 +52,6 @@ spec:
       labels:
         app: backend-despachos
     spec:
-      # El initContainer bloquea el inicio hasta que MySQL escuche peticiones
       initContainers:
       - name: wait-for-mysql
         image: busybox:1.36
@@ -72,4 +71,4 @@ spec:
         - name: SPRING_JPA_HIBERNATE_DDL_AUTO
           value: "update"
         - name: RESTART_VERSION
-          value: "10"
+          value: "11"
