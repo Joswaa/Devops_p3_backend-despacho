@@ -58,15 +58,14 @@ spec:
         ports:
         - containerPort: 8081
         env:
-        - name: DB_ENDPOINT
-          value: "mysql-despachos-service"
-        - name: DB_PORT
-          value: "3306"
-        - name: DB_NAME
-          value: "despachos_db"
-        - name: DB_USERNAME
+        # Forzamos las propiedades nativas del framework Spring Boot
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://mysql-despachos-service:3306/despachos_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC"
+        - name: SPRING_DATASOURCE_USERNAME
           value: "root"
-        - name: DB_PASSWORD
-          value: "admin123" # Valor explícito para evitar nulos en Spring
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "admin123"
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "update"
         - name: RESTART_VERSION
-          value: "8"
+          value: "9" # Forzamos nueva versión para limpiar el estado
