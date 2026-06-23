@@ -1,6 +1,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: mysql-despachos-db
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-despachos-db
+  template:
+    metadata:
+      labels:
+        app: mysql-despachos-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "admin123"
+        - name: MYSQL_DATABASE
+          value: "despachos_db"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-despachos-service
+  namespace: default
+spec:
+  selector:
+    app: mysql-despachos-db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: backend-despachos
   namespace: default
 spec:
@@ -15,21 +54,20 @@ spec:
     spec:
       containers:
       - name: backend-despachos
-        # Reemplaza 921558516087 por tu ID de cuenta si es diferente
         image: 921558516087.dkr.ecr.us-east-1.amazonaws.com/backend-despachos:latest
         ports:
         - containerPort: 8081
         env:
         - name: DB_ENDPOINT
-          value: "TU-ENDPOINT-DE-RDS-AQUI" # <-- LUEGO PONDREMOS TU BASE DE DATOS
+          value: "mysql-despachos-service" # <-- Conexión interna dentro de Kubernetes
         - name: DB_PORT
           value: "3306"
         - name: DB_NAME
           value: "despachos_db"
         - name: DB_USERNAME
-          value: "admin"
+          value: "root"
         - name: DB_PASSWORD
-          value: "tu_password_rds"
+          value: "admin123"
 ---
 apiVersion: v1
 kind: Service
