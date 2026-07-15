@@ -94,7 +94,7 @@ metadata:
   name: backend-despachos-service
   namespace: default
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: backend-despachos
   ports:
